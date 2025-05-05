@@ -45,7 +45,11 @@ def extract_trace_matrices(df, var_to_ids):
             for j, var in enumerate(variables):
                 matrix[i, j] = getattr(row, var)
 
-        patient_matrices[pid] = matrix  # 🟢 ONLY the matrix now
+        patient_matrices[pid] = {
+            "data": matrix,
+            "time": time_steps,
+            "variables": variables
+        }
 
     return patient_matrices
 
@@ -71,11 +75,11 @@ def main():
     # Convert to patient matrices
     patient_matrices = extract_trace_matrices(full_df, var_to_ids)
 
-    # Save each patient’s data (only the matrix!)
+    # Save each patient’s data
     print(f"💾 Saving .npy files to: {OUTPUT_PATH}")
-    for pid, matrix in tqdm(patient_matrices.items(), desc="Saving"):
+    for pid, pdata in tqdm(patient_matrices.items(), desc="Saving"):
         save_path = os.path.join(OUTPUT_PATH, f"patient_{pid}.npy")
-        np.save(save_path, matrix.astype(np.float32))  # 🟢 FIXED LINE
+        np.save(save_path, pdata)
 
     print("✅ Conversion complete.")
 
