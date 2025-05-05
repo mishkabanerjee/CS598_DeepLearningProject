@@ -14,7 +14,7 @@ class PretrainConfig:
     dropout = 0.1
 
     # Training
-    num_epochs = 50
+    num_epochs = 300
     learning_rate = 1e-3
     mask_ratio = 0.15
 
