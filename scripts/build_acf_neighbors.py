@@ -43,34 +43,36 @@ def compute_acf_neighbors(data):
 def main():
     os.makedirs(SAVE_DIR, exist_ok=True)
 
-    # Limit to 200 patients for faster processing
-    #files = [f for f in os.listdir(DATA_DIR) if f.endswith('.npy')][:100]
+    # Step 1: Gather all files and their lengths
+    file_lengths = []
+    for fname in os.listdir(DATA_DIR):
+        if not fname.endswith(".npy"):
+            continue
+        try:
+            data = np.load(os.path.join(DATA_DIR, fname), allow_pickle=True)
+            if isinstance(data, np.ndarray) and data.ndim == 2:
+                file_lengths.append((fname, data.shape[0]))  # (filename, T)
+        except:
+            continue
 
-    import re
+    # Step 2: Sort by T (number of timesteps)
+    file_lengths.sort(key=lambda x: x[1])  # smallest T first
+    files = [fname for fname, _ in file_lengths]
 
-    def extract_patient_id(fname):
-        match = re.search(r'patient_(\d+)\.npy', fname)
-        return int(match.group(1)) if match else float('inf')
+    # Optional: Limit to 100 smallest
+    files = files[:33000]
 
-    files = sorted(
-        [f for f in os.listdir(DATA_DIR) if f.endswith('.npy')],
-        key=extract_patient_id
-    )[:100]
-
-
+    # Step 3: Process files
     for file in tqdm(files, desc="Processing patients"):
         fpath = os.path.join(DATA_DIR, file)
         json_path = os.path.join(SAVE_DIR, file.replace('.npy', '.json'))
 
-        # Skip if already processed
         if os.path.exists(json_path):
             print(f"⏩ Skipping {file}: JSON already exists.")
             continue
 
         try:
             data = np.load(fpath, allow_pickle=True)
-
-            # Validate shape
             if not isinstance(data, np.ndarray) or data.ndim != 2:
                 print(f"⚠️ Skipping {file}: not a 2D array.")
                 continue
