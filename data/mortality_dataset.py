@@ -35,12 +35,20 @@ class HiRIDMortalityDataset(Dataset):
             os.path.join(npy_dir, f) for f in os.listdir(npy_dir) if f.endswith('.npy')
         ])
 
+        # # Find only patient_*.npy files, not masks or other npy files
+        # self.files = sorted([
+        #     os.path.join(npy_dir, f)
+        #     for f in os.listdir(npy_dir)
+        #     if f.startswith("patient_") and f.endswith(".npy") and not f.endswith("_M.npy")
+        # ])
+
+
     def __len__(self):
         return len(self.files)
 
     def __getitem__(self, idx):
         sample_path = self.files[idx]
-        sample = np.load(sample_path, allow_pickle=True).item()
+        sample = np.load(sample_path, allow_pickle=True)
         
         patient_id = int(os.path.basename(sample_path).split("_")[1].split(".")[0])
 

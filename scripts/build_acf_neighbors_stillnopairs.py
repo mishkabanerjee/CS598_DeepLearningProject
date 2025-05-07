@@ -9,29 +9,28 @@ from scipy.stats import zscore
 DATA_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy"
 SAVE_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\acf_neighbors"
 WINDOW_SIZE = 12
-POS_THRESH = 0.3
-NEG_THRESH = 0.1
+POS_THRESH = 0.3   # relaxed positive similarity threshold
+NEG_THRESH = 0.1  # relaxed negative similarity threshold
 NLAGS = 5
 
-# Less strict ACF similarity thresholds
 MIN_CORR = 0.1
-MAX_DIFF = 0.3
+MAX_DIFF = 0.2  # or try 0.3 if still too few pairs
 MIN_OVERLAP = 2
 
+
 os.makedirs(SAVE_DIR, exist_ok=True)
+
+def append_to_log(filename, log_path="processed_files.txt"):
+    with open(log_path, "a") as f:
+        f.write(f"{filename}\n")
 
 def acf_sim(x, y):
     try:
         ax = acf(zscore(x), nlags=NLAGS, fft=True)
         ay = acf(zscore(y), nlags=NLAGS, fft=True)
-        # Check how many overlapping lags have correlation above MIN_CORR and within MAX_DIFF
-        overlap = sum(
-            abs(ax[i] - ay[i]) <= MAX_DIFF and min(abs(ax[i]), abs(ay[i])) >= MIN_CORR
-            for i in range(1, min(len(ax), len(ay)))
-        )
-        return overlap
+        return np.corrcoef(ax, ay)[0, 1]
     except Exception:
-        return 0
+        return 0.0
 
 def compute_acf_neighbors(data):
     T, D = data.shape
@@ -43,10 +42,11 @@ def compute_acf_neighbors(data):
             if i == j:
                 continue
             candidate = data[j:j+WINDOW_SIZE]
-            overlap_scores = [acf_sim(anchor[:, d], candidate[:, d]) for d in range(D)]
-            if np.mean(overlap_scores) >= MIN_OVERLAP:
+            sims = [acf_sim(anchor[:, d], candidate[:, d]) for d in range(D)]
+            mean_sim = np.mean(sims)
+            if mean_sim >= POS_THRESH:
                 pos.append(j)
-            elif 0 < np.mean(overlap_scores) < MIN_OVERLAP:
+            elif mean_sim <= NEG_THRESH:
                 neg.append(j)
         result[i] = {"pos": pos, "neg": neg}
     return result
@@ -80,6 +80,7 @@ def main():
                     continue
                 data = raw["data"]
 
+            # Handle array-based npy
             elif isinstance(raw, np.ndarray) and raw.ndim == 2:
                 data = raw
 
@@ -95,8 +96,13 @@ def main():
             with open(json_path, "w") as f:
                 json.dump(acf_map, f)
 
+            # Optional: add this only if you want logging
+            # append_to_log(file)
+
         except Exception as e:
             print(f"❌ Error processing {file}: {e}")
+
+
 
 if __name__ == "__main__":
     main()
