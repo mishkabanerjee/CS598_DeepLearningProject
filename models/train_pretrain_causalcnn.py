@@ -19,7 +19,7 @@ SAVE_DIR = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt"
 WINDOW_SIZE = 12
 ENCODING_DIM = 64
 BATCH_SIZE = 64
-NUM_EPOCHS = 50
+NUM_EPOCHS = 1  # Reduced from 50 to 25 due to time constraints
 
 class ContrastiveLoss(nn.Module):
     def __init__(self, margin=1.0):
@@ -46,7 +46,7 @@ def main():
         in_channels=dataset[0]["anchor"].shape[1],
         out_channels=64,
         depth=4,
-        reduced_size=16,
+        reduced_size=4,  # IMPORTANT: reduced_size=4 for compatibility across pretraining/fine-tuning
         encoding_size=ENCODING_DIM,
         kernel_size=3,
         window_size=WINDOW_SIZE
@@ -79,8 +79,8 @@ def main():
         avg_loss = epoch_loss / len(dataloader)
         print(f"Epoch {epoch} - Loss: {avg_loss:.4f}")
 
-        # Save model every 10 epochs
-        if epoch % 10 == 0 or epoch == NUM_EPOCHS:
+        # Save model every 5 epochs
+        if epoch % 5 == 0 or epoch == NUM_EPOCHS:
             torch.save(model.state_dict(), os.path.join(SAVE_DIR, f"causalcnn_pretrain_epoch{epoch}.pt"))
             print(f"✅ Saved model at epoch {epoch}")
 

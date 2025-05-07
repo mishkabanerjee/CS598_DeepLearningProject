@@ -17,7 +17,7 @@ from data.mortality_dataset import HiRIDMortalityDataset
 BASE_NPY_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy"
 GENERAL_TABLE_PATH = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\reference_data\general_table.csv"
 SAVE_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_finetune_mortality.pt"
-PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch50.pt"
+PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch1.pt"
 
 WINDOW_SIZE = 12
 ENCODING_DIM = 64
@@ -47,7 +47,7 @@ def main():
         in_channels=dataset[0]['data'].shape[1],
         out_channels=64,
         depth=4,
-        reduced_size=16,
+        reduced_size=4,
         encoding_size=ENCODING_DIM,
         kernel_size=3,
         window_size=WINDOW_SIZE

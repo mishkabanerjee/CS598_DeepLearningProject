@@ -49,13 +49,24 @@ class HiRIDMortalityDataset(Dataset):
     def __getitem__(self, idx):
         sample_path = self.files[idx]
         sample = np.load(sample_path, allow_pickle=True)
-        
+
         patient_id = int(os.path.basename(sample_path).split("_")[1].split(".")[0])
 
-        data = sample['data']
-        time = sample['time']
+        # --- Safely extract data and time ---
+        if isinstance(sample, np.ndarray) and sample.dtype == object:
+            try:
+                sample = sample.item()
+            except Exception:
+                raise ValueError(f"Invalid object npy file: {sample_path}")
+            data = sample["data"]
+            time = sample["time"]
+        elif isinstance(sample, np.ndarray) and sample.ndim == 2:
+            data = sample
+            time = np.arange(data.shape[0])  # fallback if time is missing
+        else:
+            raise ValueError(f"Unexpected structure in {sample_path}")
 
-        # Truncate or pad
+        # --- Truncate or pad ---
         T, D = data.shape
         if T >= self.max_len:
             data = data[:self.max_len]
@@ -67,12 +78,13 @@ class HiRIDMortalityDataset(Dataset):
 
         data = np.nan_to_num(data)
 
-        # Load label
+        # --- Load label ---
         label = self.patient_labels.get(patient_id, 0)  # default to 0 if not found
 
         return {
             "data": torch.tensor(data, dtype=torch.float32),        # (max_len, num_features)
-            "time": torch.tensor(time, dtype=torch.float32),         # (max_len,)
-            "mask": (torch.tensor(data) != 0).float(),               # (max_len, num_features)
-            "label": torch.tensor(label, dtype=torch.float32)        # scalar
+            "time": torch.tensor(time, dtype=torch.float32),        # (max_len,)
+            "mask": (torch.tensor(data) != 0).float(),              # (max_len, num_features)
+            "label": torch.tensor(label, dtype=torch.float32)       # scalar
         }
+

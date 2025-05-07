@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from models.causal_cnn_encoder import CausalCNNEncoder
-from data.circulatory_dataset import HiRIDCirculatoryDataset
+from data.circulatoryfailure_dataset import HiRIDCirculatoryFailureDataset
 
 # === Hyperparameters ===
 BASE_NPY_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy"

@@ -1,0 +1,25 @@
+Python 3.8.20
+
+# Core ML libraries
+torch==2.4.1
+torchvision==0.19.1
+torchaudio==2.4.1
+scikit-learn==1.3.2
+numpy==1.24.4
+pandas==2.0.3
+scipy==1.10.1
+matplotlib==3.7.5
+seaborn==0.13.2
+tqdm==4.67.1
+
+# Time-series/statistical tools
+statsmodels==0.14.1
+
+# Deep learning models (used if transformer pipeline is included)
+transformers==4.46.3
+tokenizers==0.20.3
+huggingface-hub==0.30.2
+accelerate==1.0.1
+
+# Optional tools
+pandarallel==1.6.5  # if you used parallelization
