@@ -1,22 +1,18 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class CausalCNNEncoder(nn.Module):
     def __init__(
         self,
         in_channels=18,
         out_channels=64,
-        depth=6,
-        reduced_size=16,
-        encoding_size=10,
+        depth=4,
+        reduced_size=4,         # Unused here, but keeping for future use
+        encoding_size=10,       # Must match classifier input
         kernel_size=3,
         window_size=12
     ):
         super().__init__()
-        self.depth = depth
-        self.reduced_size = reduced_size
-
         layers = []
         for i in range(depth):
             dilation = 2 ** i
@@ -35,9 +31,7 @@ class CausalCNNEncoder(nn.Module):
         self.final = nn.Linear(out_channels * window_size, encoding_size)
 
     def forward(self, x):
-        # x: (B, T, D)
         x = x.permute(0, 2, 1)  # (B, D, T)
-        out = self.network(x)[:, :, -x.size(-1):]  # Ensure causality
-        out = out.reshape(out.size(0), -1)  # (B, D*T)
-        out = self.final(out)  # (B, encoding_size)
-        return out
+        out = self.network(x)[:, :, -x.size(-1):]  # (B, C, T)
+        out = out.reshape(out.size(0), -1)  # (B, C*T) = (B, 64*12)
+        return self.final(out)  # (B, encoding_size)

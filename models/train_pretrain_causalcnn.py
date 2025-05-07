@@ -17,9 +17,9 @@ BASE_NPY_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy
 ACF_NEIGHBOR_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\acf_neighbors"
 SAVE_DIR = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt"
 WINDOW_SIZE = 12
-ENCODING_DIM = 64
+ENCODING_DIM = 10  # Match encoding_size with model definition
 BATCH_SIZE = 64
-NUM_EPOCHS = 1  # Reduced from 50 to 25 due to time constraints
+NUM_EPOCHS = 25  # Reduced from 50 to 25 due to computing constraints
 
 class ContrastiveLoss(nn.Module):
     def __init__(self, margin=1.0):
@@ -46,8 +46,8 @@ def main():
         in_channels=dataset[0]["anchor"].shape[1],
         out_channels=64,
         depth=4,
-        reduced_size=4,  # IMPORTANT: reduced_size=4 for compatibility across pretraining/fine-tuning
-        encoding_size=ENCODING_DIM,
+        reduced_size=4,  # Ensures correct flattening
+        encoding_size=ENCODING_DIM,  # Match fine-tuning
         kernel_size=3,
         window_size=WINDOW_SIZE
     ).to(device)
