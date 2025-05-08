@@ -19,12 +19,12 @@ from data.circulatoryfailure_dataset_clean import HiRIDCirculatoryFailureDataset
 BASE_NPY_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy"
 LABEL_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\data\circulatory_failure\circulatory_failure_labels.csv"
 SAVE_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_finetune_circulatory.pt"
-PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch1.pt"
+PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch25.pt"
 
 WINDOW_SIZE = 12
 ENCODING_DIM = 10
 BATCH_SIZE = 64
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 LR = 1e-3
 
 

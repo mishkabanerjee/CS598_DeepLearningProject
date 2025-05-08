@@ -26,7 +26,7 @@ This repository contains code for reproducing and extending the TRACE framework 
 └── ckpt/                      # Checkpoint directory
 ```
 
-``` local computer - not shared - because files are huge
+```data files present in local computer - not shared - because files are huge
 ├── hirid/                     # Folder containing npy, acf_neighbors, labels etc.
 │   ├── npy/
 │   ├── acf_neighbors/

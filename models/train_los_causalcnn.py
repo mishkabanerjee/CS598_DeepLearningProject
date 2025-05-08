@@ -15,13 +15,13 @@ from data.los_dataset_clean import HiRIDLOSDatasetClean
 # === Hyperparameters ===
 BASE_NPY_DIR = r"C:\Users\mishka.banerjee\Documents\UIUC\Deep Learning\hirid\npy"
 LABEL_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\data\length_of_stay\los_labels.csv"
-PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch1.pt"
+PRETRAINED_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_pretrain_epoch25.pt"
 SAVE_PATH = r"C:\Users\mishka.banerjee\Documents\DeepLearning_TRACE_Project\ckpt\causalcnn_finetune_los.pt"
 
 WINDOW_SIZE = 12
 ENCODING_DIM = 10
 BATCH_SIZE = 64
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 LR = 1e-3
 
 
